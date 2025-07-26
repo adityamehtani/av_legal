@@ -18,9 +18,8 @@ const text = ref('')
 const summary = ref('')
 
 function summarizeText() {
-  // Simulated summarization for now
   summary.value = text.value.length > 0
-    ? 'This is a short summary of the input legal text.'
+    ? '✅ This is a simulated summary of your legal text.'
     : ''
 }
 </script>
