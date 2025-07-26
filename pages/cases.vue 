@@ -1,0 +1,7 @@
+<template>
+  <div>
+    <h1>🔍 Case Tracker</h1>
+    <input placeholder="Enter Case Number" />
+    <p>📄 Dummy result will appear here.</p>
+  </div>
+</template>
