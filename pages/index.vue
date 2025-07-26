@@ -6,4 +6,5 @@
       <li><a href="/summarize">Go to Summarizer</a></li>
     </ul>
   </div>
+
 </template>
