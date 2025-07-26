@@ -1,7 +1,19 @@
 <template>
-  <div>
+  <div style="padding: 2rem;">
     <h1>🔍 Case Tracker</h1>
-    <input placeholder="Enter Case Number" />
-    <p>📄 Dummy result will appear here.</p>
+    <label for="court">Select Court:</label>
+    <select id="court">
+      <option value="phhc">Punjab & Haryana High Court</option>
+      <option value="sc">Supreme Court</option>
+      <option value="district">District Court</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Enter Case Number"
+      style="display: block; margin-top: 1rem;"
+    />
+
+    <p>📄 Case data will appear here.</p>
   </div>
 </template>
