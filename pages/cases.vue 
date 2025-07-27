@@ -1,20 +1,37 @@
 <template>
   <div style="padding: 2rem;">
-    <h1>📁 Case Upload</h1>
-    <input type="file" @change="handleFileUpload" />
-    <p v-if="fileName">Selected: {{ fileName }}</p>
+    <h1>📂 My Legal Cases</h1>
+
+    <div v-if="cases.length === 0">
+      <p>No cases found. Add one below!</p>
+    </div>
+
+    <ul>
+      <li v-for="(caseItem, index) in cases" :key="index">
+        <strong>{{ caseItem.title }}</strong> – {{ caseItem.date }}
+      </li>
+    </ul>
+
+    <div style="margin-top: 2rem;">
+      <input v-model="newCaseTitle" placeholder="Case title" />
+      <input v-model="newCaseDate" type="date" />
+      <button @click="addCase">Add Case</button>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-const fileName = ref('')
+const cases = ref([])
+const newCaseTitle = ref('')
+const newCaseDate = ref('')
 
-function handleFileUpload(event) {
-  const file = event.target.files[0]
-  if (file) {
-    fileName.value = file.name
+function addCase() {
+  if (newCaseTitle.value && newCaseDate.value) {
+    cases.value.push({ title: newCaseTitle.value, date: newCaseDate.value })
+    newCaseTitle.value = ''
+    newCaseDate.value = ''
   }
 }
 </script>
