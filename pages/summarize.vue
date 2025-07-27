@@ -1,38 +1,20 @@
-<template>
-  <div style="padding: 2rem;">
-    <h1>📝 Summarize Legal Text</h1>
+import { OpenAI } from 'openai';
 
-    <textarea
-      v-model="text"
-      placeholder="Paste your legal text here..."
-      rows="10"
-      style="width: 100%; font-size: 16px; margin: 1em 0;"
-    />
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
-    <button @click="summarizeText" style="padding: 0.6em 1.5em; font-size: 16px; background: #007bff; color: white; border: none;">
-      Summarize
-    </button>
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  const prompt = body.text;
 
-    <div v-if="summary" style="margin-top: 2em;">
-      <h2>🔍 Summary</h2>
-      <p>{{ summary }}</p>
-    </div>
-  </div>
-</template>
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      { role: 'system', content: 'You are a legal assistant that summarizes legal case text.' },
+      { role: 'user', content: prompt }
+    ]
+  });
 
-<script setup>
-import { ref } from 'vue'
-
-const text = ref('')
-const summary = ref('')
-
-function summarizeText() {
-  if (!text.value.trim()) {
-    summary.value = "❗ Please paste legal text to summarize."
-    return
-  }
-
-  // Simulated summary - in next step we will call real AI
-  summary.value = "✅ This is a simulated summary of your legal text. Real AI summary will be added soon."
-}
-</script>
+  return { summary: completion.choices[0].message.content };
+});
