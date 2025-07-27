@@ -1,38 +1,20 @@
 <template>
-  <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4">🔍 Court Case Tracker</h1>
-
-    <input
-      v-model="cnr"
-      placeholder="Enter CNR Number"
-      class="border p-2 rounded w-full max-w-md mb-4"
-    />
-    <button @click="searchCase" class="bg-blue-500 text-white px-4 py-2 rounded">
-      Search
-    </button>
-
-    <div v-if="result" class="mt-6 p-4 border rounded bg-gray-100">
-      <p><strong>CNR:</strong> {{ result.cnr }}</p>
-      <p><strong>Case Title:</strong> {{ result.title }}</p>
-      <p><strong>Next Hearing:</strong> {{ result.hearing }}</p>
-      <p><strong>Judge:</strong> {{ result.judge }}</p>
-    </div>
+  <div style="padding: 2rem;">
+    <h1>📁 Case Upload</h1>
+    <input type="file" @change="handleFileUpload" />
+    <p v-if="fileName">Selected: {{ fileName }}</p>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-const cnr = ref('')
-const result = ref(null)
+const fileName = ref('')
 
-function searchCase() {
-  // Fake result for now
-  result.value = {
-    cnr: cnr.value,
-    title: 'State vs John Doe',
-    hearing: '2025-08-12',
-    judge: 'Justice Sharma'
+function handleFileUpload(event) {
+  const file = event.target.files[0]
+  if (file) {
+    fileName.value = file.name
   }
 }
 </script>
