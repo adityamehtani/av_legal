@@ -1,25 +1,12 @@
-// server/api/summarize.ts
 import { OpenAI } from 'openai';
-import { defineEventHandler, readBody } from 'h3';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const inputText = body.text;
-
-  if (!inputText) {
-    return { summary: 'No text provided.' };
-  }
-
-  const completion = await openai.chat.completions.create({
-    messages: [
-      { role: 'system', content: 'You are a legal document summarizer.' },
-      { role: 'user', content: inputText },
-    ],
+  const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: body.text }],
   });
-
-  const summary = completion.choices[0]?.message?.content || 'No summary available.';
-  return { summary };
+  return { summary: response.choices[0].message.content };
 });
