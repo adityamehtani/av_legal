@@ -10,15 +10,9 @@ export const config = {
 
 export default defineEventHandler(async (event) => {
   const form = formidable({ multiples: false })
+  const [fields, files] = await form.parse(event.node.req)
 
-  const [fields, files] = await new Promise((resolve, reject) => {
-    form.parse(event.node.req, (err, fields, files) => {
-      if (err) reject(err)
-      else resolve([fields, files])
-    })
-  })
-
-  const file = files.file[0]
+  const file = Array.isArray(files.file) ? files.file[0] : files.file
   const data = await readFile(file.filepath)
   const pdf = await pdfParse(data)
 
