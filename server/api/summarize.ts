@@ -1,45 +1,34 @@
-<template>
-  <div style="padding: 2rem;">
-    <h2>Summarize a Legal Document</h2>
-    <input type="file" @change="handleFileUpload" />
-    <button @click="summarizeText" :disabled="!uploadedText">Summarize</button>
+import { OpenAI } from 'openai'
 
-    <div v-if="summary">
-      <h3>Summary:</h3>
-      <p>{{ summary }}</p>
-    </div>
-  </div>
-</template>
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+})
 
-<script setup>
-import { ref } from 'vue'
-import { useFetch } from '#app'
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event)
 
-const uploadedText = ref('')
-const summary = ref('')
-
-function handleFileUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  const reader = new FileReader()
-  reader.onload = () => {
-    uploadedText.value = reader.result
+  if (!body.text) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing text to summarize'
+    })
   }
-  reader.readAsText(file)
-}
 
-async function summarizeText() {
-  const { data, error } = await useFetch('/api/summarize', {
-    method: 'POST',
-    body: { text: uploadedText.value }
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a legal document summarizer.'
+      },
+      {
+        role: 'user',
+        content: `Summarize the following text:\n\n${body.text}`
+      }
+    ]
   })
 
-  if (error.value) {
-    alert('Error summarizing')
-    return
+  return {
+    summary: completion.choices[0].message.content
   }
-
-  summary.value = data.value.summary
-}
-</script>
+})
