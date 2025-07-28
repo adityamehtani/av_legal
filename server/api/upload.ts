@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const form = formidable({ multiples: false })
   const [fields, files] = await form.parse(event.node.req)
 
-  const file = Array.isArray(files.file) ? files.file[0] : files.file
+  const file = files.file[0]
   const data = await readFile(file.filepath)
   const pdf = await pdfParse(data)
 
