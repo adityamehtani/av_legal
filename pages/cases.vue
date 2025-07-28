@@ -1,18 +1,17 @@
 <template>
   <div class="container">
-    <h1>⚖️ Live Case Tracker</h1>
+    <h1>🔍 Track Your Case</h1>
 
-    <div class="form-section">
-      <label for="caseNumber">Enter Case Number:</label>
-      <input v-model="caseNumber" id="caseNumber" placeholder="e.g. WP/1234/2024" />
+    <input
+      v-model="caseNumber"
+      type="text"
+      placeholder="Enter Case Number"
+    />
+    <button @click="trackCase">Track Case</button>
 
-      <button @click="trackCase">Track Case</button>
-    </div>
-
-    <div class="result-section" v-if="caseStatus">
-      <h2>📋 Case Status</h2>
-      <p><strong>Case:</strong> {{ caseNumber }}</p>
-      <p><strong>Status:</strong> {{ caseStatus }}</p>
+    <div v-if="status">
+      <h3>📋 Case Status:</h3>
+      <p>{{ status }}</p>
     </div>
   </div>
 </template>
@@ -21,42 +20,44 @@
 import { ref } from 'vue'
 
 const caseNumber = ref('')
-const caseStatus = ref('')
+const status = ref('')
 
-// Fake tracking for now
-function trackCase() {
-  caseStatus.value = '🟢 Hearing scheduled on August 10, 2025 at Delhi High Court'
+async function trackCase() {
+  if (!caseNumber.value) {
+    status.value = '⚠️ Please enter a case number.'
+    return
+  }
+
+  const response = await $fetch('/api/cases', {
+    method: 'POST',
+    body: { caseNumber: caseNumber.value },
+  })
+
+  status.value = response.status
 }
 </script>
 
 <style scoped>
 .container {
   max-width: 600px;
-  margin: auto;
-  padding: 1rem;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
 }
 
 input {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  width: 100%;
-  margin-bottom: 1rem;
+  padding: 10px;
+  width: 60%;
+  margin-bottom: 10px;
 }
 
 button {
-  padding: 0.5rem 1rem;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: 10px 20px;
   cursor: pointer;
 }
 
-.result-section {
-  margin-top: 2rem;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 8px;
+p {
+  font-weight: bold;
+  margin-top: 10px;
 }
 </style>
-
