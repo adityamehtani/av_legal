@@ -1,6 +1,7 @@
 import formidable from 'formidable'
-import { readFile } from 'fs/promises'
+import { readFile, writeFile } from 'fs/promises'
 import pdfParse from 'pdf-parse'
+import { nanoid } from 'nanoid'
 
 export const config = {
   api: {
@@ -16,5 +17,15 @@ export default defineEventHandler(async (event) => {
   const data = await readFile(file.filepath)
   const pdf = await pdfParse(data)
 
-  return { text: pdf.text }
+  const caseId = nanoid()
+  const caseData = {
+    id: caseId,
+    name: file.originalFilename,
+    text: pdf.text,
+    date: new Date().toISOString(),
+  }
+
+  await writeFile(`server/data/cases/${caseId}.json`, JSON.stringify(caseData, null, 2))
+
+  return { success: true, case: caseData }
 })

@@ -11,6 +11,9 @@ importers:
       formidable:
         specifier: ^3.5.4
         version: 3.5.4
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
       openai:
         specifier: ^5.10.2
         version: 5.10.2(ws@8.18.3)(zod@3.25.76)
