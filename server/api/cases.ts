@@ -1,12 +1,12 @@
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const caseNumber = body.caseNumber
+import { readdir, readFile } from 'fs/promises'
 
-  // Simulated status response
-  const result = {
-    status: '🟢 Hearing scheduled on August 10, 2025 at Delhi High Court',
-    caseNumber,
-  }
-
-  return result
+export default defineEventHandler(async () => {
+  const files = await readdir('server/data/cases')
+  const cases = await Promise.all(
+    files.map(async (file) => {
+      const content = await readFile(`server/data/cases/${file}`, 'utf-8')
+      return JSON.parse(content)
+    })
+  )
+  return cases
 })
